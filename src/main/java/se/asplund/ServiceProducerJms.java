@@ -6,12 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
-import rx.Observable;
 
 import java.util.Date;
 import java.util.Random;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Component
 public class ServiceProducerJms {
@@ -25,10 +22,14 @@ public class ServiceProducerJms {
 
 	@SuppressWarnings("unchecked")
 	@JmsListener(destination = "mailbox-producer", concurrency = "10")
-	public void receiveMessage(JmsMessage jmsMessage) {
+	public void receiveMessage(final JmsMessage jmsMessage) {
 		logger.debug("Receive Message - Producer");
 
-		Observable.timer(random.nextInt(1000) + 1000, MILLISECONDS).toBlocking().first();
+		try {
+			Thread.sleep(random.nextInt(1000) + 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 
 		jmsTemplate.send("mailbox-client", session ->
 				session.createObjectMessage(new JmsMessage<>(jmsMessage.getId(), "<" + jmsMessage.getMessage() + ">")));
