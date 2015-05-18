@@ -35,10 +35,10 @@ public class AsyncMqClient<T> {
 		return observable;
 	}
 
-	@JmsListener(destination = "mailbox-consumer", concurrency = "10" )
 	@SuppressWarnings("unchecked")
-	public void receiveMessage(JmsMessage jmsMessage) {
-		logger.debug("Receive Message - Consumer");
+	@JmsListener(destination = "mailbox-client", concurrency = "10" )
+	private void receiveMessage(JmsMessage jmsMessage) {
+		logger.debug("Receive Message - Client");
 
 		Subscriber subscriber = subscribers.remove(jmsMessage.getId());
 

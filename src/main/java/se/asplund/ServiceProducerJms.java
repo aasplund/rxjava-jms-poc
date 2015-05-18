@@ -14,23 +14,23 @@ import java.util.Random;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 @Component
-public class EmbeddedJmsProvider {
+public class ServiceProducerJms {
 
-	private static final Logger logger = LoggerFactory.getLogger(EmbeddedJmsProvider.class);
+	private static final Logger logger = LoggerFactory.getLogger(ServiceProducerJms.class);
 
 	@Autowired
 	private JmsTemplate jmsTemplate;
 
 	private Random random = new Random(new Date().getTime());
 
-	@JmsListener(destination = "mailbox-producer", concurrency = "10")
 	@SuppressWarnings("unchecked")
+	@JmsListener(destination = "mailbox-producer", concurrency = "10")
 	public void receiveMessage(JmsMessage jmsMessage) {
 		logger.debug("Receive Message - Producer");
 
 		Observable.timer(random.nextInt(1000) + 1000, MILLISECONDS).toBlocking().first();
 
-		jmsTemplate.send("mailbox-consumer", session ->
+		jmsTemplate.send("mailbox-client", session ->
 				session.createObjectMessage(new JmsMessage<>(jmsMessage.getId(), "<" + jmsMessage.getMessage() + ">")));
 	}
 }

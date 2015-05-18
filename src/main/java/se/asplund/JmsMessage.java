@@ -2,11 +2,11 @@ package se.asplund;
 
 import java.io.Serializable;
 
-public class JmsMessage<T> implements Serializable {
-	private String id;
-	private T message;
+final public class JmsMessage<T> implements Serializable {
+	final private String id;
+	final private T message;
 
-	public JmsMessage(String id, T message) {
+	public JmsMessage(final String id, final T message) {
 		this.id = id;
 		this.message = message;
 	}
@@ -17,9 +17,5 @@ public class JmsMessage<T> implements Serializable {
 
 	public T getMessage() {
 		return message;
-	}
-
-	public void setMessage(T message) {
-		this.message = message;
 	}
 }
