@@ -4,13 +4,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import rx.Observable;
 
+import javax.ws.rs.Path;
 import java.util.Date;
 import java.util.Random;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-public abstract class SecuredController extends AbstractAsyncController {
-	private static final Logger logger = LoggerFactory.getLogger(SecuredController.class);
+@Path("/authorize")
+public abstract class AuthorizedController extends AbstractAsyncController {
+	private static final Logger logger = LoggerFactory.getLogger(AuthorizedController.class);
 	private static final Random random = new Random(new Date().getTime());
 
 	@Override

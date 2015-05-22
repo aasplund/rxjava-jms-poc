@@ -12,12 +12,12 @@ import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 
 @Component
-@Path("/non-secret")
-public class NonSecretStuffController extends UnsecuredController {
+public class NonSecretStuffController extends OpenController {
 	private static final Logger logger = LoggerFactory.getLogger(NonSecretStuffController.class);
 
 	@GET
 	@Produces("text/plain")
+	@Path("/hello")
 	public void asyncGetOne(@Suspended final AsyncResponse response) {
 		handleResponse(response);
 	}
