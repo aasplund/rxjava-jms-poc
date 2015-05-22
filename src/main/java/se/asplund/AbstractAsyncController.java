@@ -13,11 +13,11 @@ public abstract class AbstractAsyncController {
 
 	protected abstract Observable<ApiMessage> createObservable();
 
-	protected abstract String getApiMessage();
+	protected abstract String getApiMessageBody();
 
 	protected void handleResponse(final AsyncResponse response) {
 		createObservable()
-				.flatMap(msg -> mqClient.sendAsynchronous(msg.withBody(getApiMessage())))
+				.flatMap(msg -> mqClient.sendAsynchronous(msg.withBody(getApiMessageBody())))
 				.map(msg -> msg.getMessageBody() + " " + msg.getSecurityContext())
 				.subscribe(response::resume, response::resume);
 	}

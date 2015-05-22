@@ -23,7 +23,7 @@ public class NonSecretStuffController extends UnsecuredController {
 	}
 
 	@Override
-	protected String getApiMessage() {
+	protected String getApiMessageBody() {
 		return "Hello";
 	}
 

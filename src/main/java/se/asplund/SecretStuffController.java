@@ -23,7 +23,7 @@ public class SecretStuffController extends SecuredController {
 	}
 
 	@Override
-	protected String getApiMessage() {
+	protected String getApiMessageBody() {
 		return "Hello";
 	}
 
