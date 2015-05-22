@@ -14,23 +14,25 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
-public class AsyncMqClient<T> {
+public class AsyncMqClient {
 
 	private static final Logger logger = LoggerFactory.getLogger(AsyncMqClient.class);
 
-	private static Map<String, Subscriber> subscribers = new ConcurrentHashMap<>();
+	private static Map<String, Pair> subscribers = new ConcurrentHashMap<>();
 
 	@Autowired
 	private JmsTemplate jmsTemplate;
 
-	public Observable<T> sendAsynchronous(T messageBody) {
+	public Observable<ApiMessage> sendAsynchronous(ApiMessage apiMessage) {
 		logger.debug("SendAsynchronous");
 
-		String uuid = UUID.randomUUID().toString();
-		Observable<T> observable = Observable.create(aSubscriber -> subscribers.putIfAbsent(uuid, aSubscriber));
+		final String uuid = UUID.randomUUID().toString();
+
+		Observable<ApiMessage> observable = Observable.create(aSubscriber ->
+				subscribers.putIfAbsent(uuid, new Pair(aSubscriber, apiMessage)));
 
 		jmsTemplate.send("mailbox-producer", session ->
-				session.createObjectMessage(new JmsMessage<>(uuid, messageBody)));
+				session.createObjectMessage(new JmsMessage(uuid, apiMessage.getMessageBody())));
 
 		return observable;
 	}
@@ -40,12 +42,29 @@ public class AsyncMqClient<T> {
 	private void receiveMessage(JmsMessage jmsMessage) {
 		logger.debug("Receive Message - Client");
 
-		Subscriber subscriber = subscribers.remove(jmsMessage.getId());
+		Pair pair = subscribers.remove(jmsMessage.getId());
 
-		if (subscriber != null && !subscriber.isUnsubscribed()) {
-			subscriber.onNext(jmsMessage.getMessage());
-			subscriber.onCompleted();
+		if (pair != null && !pair.getSubscriber().isUnsubscribed()) {
+			pair.getSubscriber().onNext(pair.getApiMessage().withBody(jmsMessage.getMessage().toString()));
+			pair.getSubscriber().onCompleted();
 		}
 	}
 
+	private class Pair {
+		private Subscriber<? super ApiMessage> subscriber;
+		private ApiMessage apiMessage;
+
+		public Pair(Subscriber<? super ApiMessage> subscriber, ApiMessage apiMessage) {
+			this.subscriber = subscriber;
+			this.apiMessage = apiMessage;
+		}
+
+		public Subscriber<? super ApiMessage> getSubscriber() {
+			return subscriber;
+		}
+
+		public ApiMessage getApiMessage() {
+			return apiMessage;
+		}
+	}
 }

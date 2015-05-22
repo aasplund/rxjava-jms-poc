@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 
 @SuppressWarnings("unchecked")
@@ -17,7 +16,9 @@ public class Application extends ResourceConfig {
 	private static final Logger logger = LoggerFactory.getLogger(Application.class);
 
 	public Application() {
-		register(AsyncController.class);
+		register(SecretStuffController.class);
+		register(NonSecretStuffController.class);
+		register(UnauthorizedMapper.class);
 	}
 
 	public static void main(String[] args) throws Exception {

@@ -31,6 +31,6 @@ public class ServiceProducerJms {
 		Observable.timer(random.nextInt(1000) + 1000, MILLISECONDS).toBlocking().first();
 
 		jmsTemplate.send("mailbox-client", session ->
-				session.createObjectMessage(new JmsMessage<>(jmsMessage.getId(), "<" + jmsMessage.getMessage() + ">")));
+				session.createObjectMessage(new JmsMessage(jmsMessage.getId(), jmsMessage.getMessage().toString().toUpperCase())));
 	}
 }
