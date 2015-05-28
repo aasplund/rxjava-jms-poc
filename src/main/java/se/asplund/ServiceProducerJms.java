@@ -21,7 +21,7 @@ public class ServiceProducerJms {
 	@Autowired
 	private JmsTemplate jmsTemplate;
 
-	private Random random = new Random(new Date().getTime());
+	private final Random random = new Random(new Date().getTime());
 
 	@SuppressWarnings("unchecked")
 	@JmsListener(destination = "mailbox-producer", concurrency = "10")

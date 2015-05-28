@@ -13,8 +13,6 @@ import org.springframework.jms.annotation.EnableJms;
 @EnableAutoConfiguration
 @EnableJms
 public class Application extends ResourceConfig {
-	private static final Logger logger = LoggerFactory.getLogger(Application.class);
-
 	public Application() {
 		register(SecretStuffController.class);
 		register(NonSecretStuffController.class);

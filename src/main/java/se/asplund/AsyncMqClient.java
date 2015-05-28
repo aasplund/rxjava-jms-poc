@@ -18,7 +18,7 @@ public class AsyncMqClient {
 
 	private static final Logger logger = LoggerFactory.getLogger(AsyncMqClient.class);
 
-	private static Map<String, Pair> subscribers = new ConcurrentHashMap<>();
+	private static final Map<String, Pair> subscribers = new ConcurrentHashMap<>();
 
 	@Autowired
 	private JmsTemplate jmsTemplate;
@@ -51,8 +51,8 @@ public class AsyncMqClient {
 	}
 
 	private class Pair {
-		private Subscriber<? super ApiMessage> subscriber;
-		private ApiMessage apiMessage;
+		private final Subscriber<? super ApiMessage> subscriber;
+		private final ApiMessage apiMessage;
 
 		public Pair(Subscriber<? super ApiMessage> subscriber, ApiMessage apiMessage) {
 			this.subscriber = subscriber;
